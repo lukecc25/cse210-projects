@@ -1,0 +1,36 @@
+@startuml
+'-------------------------
+' Classes
+'-------------------------
+class Journal {
+  - entries : List<Entry>
+  + addEntry(entry : Entry) : void
+  + displayAll() : void
+  + saveToFile(filename : String) : void
+  + loadFromFile(filename : String) : void
+}
+
+class Entry {
+  - date : String
+  - promptText : String
+  - entryText : String
+  + display() : void
+}
+
+class PromptGenerator {
+  + generatePrompt() : String
+}
+
+class FileManager {
+  + save(data : String, filename : String) : void
+  + load(filename : String) : String
+}
+
+'-------------------------
+' Relationships
+'-------------------------
+Journal "1" --> "*" Entry : contains
+Journal --> PromptGenerator : uses
+Journal --> FileManager : uses
+
+@enduml
