@@ -6,7 +6,7 @@ public class Entry
     public string Prompt { get; set; }
     public string Response { get; set; }
 
-    // Exceeding requirement: extra info
+    
     public int Mood { get; set; } // 0 means "not provided"
     public string Tags { get; set; }
 

@@ -5,8 +5,6 @@ using System.Text.Json;
 
 public class Journal
 {
-    // Chosen separator (core requirement allows a "unlikely to appear" separator).
-    // Exceeding requirement: JSON save/load also supported.
     private const string Separator = "~|~";
 
     private List<Entry> _entries = new List<Entry>();
@@ -136,7 +134,6 @@ public class Journal
         using StreamWriter outputFile = new StreamWriter(filename);
         foreach (Entry entry in _entries)
         {
-            // Date ~|~ Prompt ~|~ Response ~|~ Mood ~|~ Tags
             outputFile.WriteLine(
                 $"{Sanitize(entry.Date)}{Separator}" +
                 $"{Sanitize(entry.Prompt)}{Separator}" +
@@ -161,7 +158,7 @@ public class Journal
 
             string[] parts = line.Split(Separator);
 
-            // Support both the core 3-field format and the extended 5-field format.
+           
             if (parts.Length >= 3)
             {
                 string date = parts[0];
@@ -208,7 +205,7 @@ public class Journal
 
     private static string Sanitize(string value)
     {
-        // Keep it simple: strip newlines so one entry = one line.
+        
         return (value ?? "").Replace("\r", " ").Replace("\n", " ");
     }
 

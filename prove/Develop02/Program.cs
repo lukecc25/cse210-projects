@@ -1,9 +1,5 @@
 using System;
 
-// Exceeding requirements:
-// - Adds optional "Mood (1-5)" and "Tags" to each entry (stored and displayed).
-// - Save/Load supports both the core custom text format AND JSON when the filename ends in ".json".
-// - Adds a "Search entries" menu option to find entries by keyword.
 class Program
 {
     static void Main(string[] args)
