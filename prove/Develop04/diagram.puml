@@ -1,0 +1,38 @@
+@startuml
+
+class Activity {
+  - _name : String
+  - _description : String
+  - _duration : int
+  + Activity(name : String, description : String, duration : int)
+  + displayStartMessage() : void
+  + displayEndMessage() : void
+  + showSpinner(seconds : int) : void
+  + showCountdown(seconds : int) : void
+  + runActivity() : void
+}
+
+class BreathingActivity {
+  - _breathingPattern : List<int>
+  + BreathingActivity()
+  + startBreathing() : void
+}
+
+class ReflectingActivity {
+  - _prompts : List<String>
+  + ReflectingActivity()
+  + displayPrompt() : void
+  + displayQuestions() : void
+}
+
+class ListingActivity {
+  - _itemsToList : List<String>
+  + ListingActivity()
+  + displayListPrompt() : void
+  + collectResponses() : void
+}
+
+Activity <|-- BreathingActivity
+Activity <|-- ReflectingActivity
+Activity <|-- ListingActivity
+@enduml
