@@ -1,0 +1,53 @@
+@startuml Eternal Quest Class Diagram
+
+abstract class Goal {
+  - _name : string
+  - _description : string
+  - _points : int
+  --
+  + Goal(name : string, description : string, points : int)
+  + GetName() : string
+  + GetDescription() : string
+  + GetPoints() : int
+  + RecordEvent() : int
+  + GetDisplayString() : string
+  + GetStringRepresentation() : string
+  + IsComplete() : bool
+}
+
+class SimpleGoal {
+  - _isComplete : bool
+  --
+  + SimpleGoal(name : string, description : string, points : int)
+  + RecordEvent() : int
+  + GetDisplayString() : string
+  + GetStringRepresentation() : string
+  + IsComplete() : bool
+}
+
+class EternalGoal {
+  --
+  + EternalGoal(name : string, description : string, points : int)
+  + RecordEvent() : int
+  + GetDisplayString() : string
+  + GetStringRepresentation() : string
+  + IsComplete() : bool
+}
+
+class ChecklistGoal {
+  - _targetCount : int
+  - _currentCount : int
+  - _bonusPoints : int
+  --
+  + ChecklistGoal(name : string, description : string, points : int, target : int, bonus : int)
+  + RecordEvent() : int
+  + GetDisplayString() : string
+  + GetStringRepresentation() : string
+  + IsComplete() : bool
+}
+
+Goal <|-- SimpleGoal
+Goal <|-- EternalGoal
+Goal <|-- ChecklistGoal
+
+@enduml
