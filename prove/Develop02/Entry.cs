@@ -2,49 +2,73 @@ using System;
 
 public class Entry
 {
-    public string Date { get; set; }
-    public string Prompt { get; set; }
-    public string Response { get; set; }
+    private string _date;
+    private string _prompt;
+    private string _response;
 
-    
-    public int Mood { get; set; } // 0 means "not provided"
-    public string Tags { get; set; }
+    // Exceeding requirement: extra info
+    private int _mood; // 0 means "not provided"
+    private string _tags;
 
     public Entry()
     {
-        Date = "";
-        Prompt = "";
-        Response = "";
-        Mood = 0;
-        Tags = "";
+        _date = "";
+        _prompt = "";
+        _response = "";
+        _mood = 0;
+        _tags = "";
     }
 
     public Entry(string date, string prompt, string response, int mood = 0, string tags = "")
     {
-        Date = date ?? "";
-        Prompt = prompt ?? "";
-        Response = response ?? "";
-        Mood = mood;
-        Tags = tags ?? "";
+        _date = date ?? "";
+        _prompt = prompt ?? "";
+        _response = response ?? "";
+        _mood = mood;
+        _tags = tags ?? "";
+    }
+
+    public string GetDate()
+    {
+        return _date;
+    }
+
+    public string GetPrompt()
+    {
+        return _prompt;
+    }
+
+    public string GetResponse()
+    {
+        return _response;
+    }
+
+    public int GetMood()
+    {
+        return _mood;
+    }
+
+    public string GetTags()
+    {
+        return _tags;
     }
 
     public void Display()
     {
-        Console.WriteLine($"Date: {Date}");
-        Console.WriteLine($"Prompt: {Prompt}");
-        Console.WriteLine($"Response: {Response}");
+        Console.WriteLine($"Date: {_date}");
+        Console.WriteLine($"Prompt: {_prompt}");
+        Console.WriteLine($"Response: {_response}");
 
-        if (Mood != 0)
+        if (_mood != 0)
         {
-            Console.WriteLine($"Mood: {Mood}/5");
+            Console.WriteLine($"Mood: {_mood}/5");
         }
 
-        if (!string.IsNullOrWhiteSpace(Tags))
+        if (!string.IsNullOrWhiteSpace(_tags))
         {
-            Console.WriteLine($"Tags: {Tags}");
+            Console.WriteLine($"Tags: {_tags}");
         }
 
         Console.WriteLine();
     }
 }
-

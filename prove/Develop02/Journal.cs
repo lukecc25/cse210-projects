@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 
 public class Journal
 {
-    private const string Separator = "~|~";
+    private const string _separator = "~|~";
 
     private List<Entry> _entries = new List<Entry>();
 
@@ -44,10 +43,10 @@ public class Journal
         int matches = 0;
         foreach (Entry entry in _entries)
         {
-            if (Contains(entry.Date, keyword) ||
-                Contains(entry.Prompt, keyword) ||
-                Contains(entry.Response, keyword) ||
-                Contains(entry.Tags, keyword))
+            if (Contains(entry.GetDate(), keyword) ||
+                Contains(entry.GetPrompt(), keyword) ||
+                Contains(entry.GetResponse(), keyword) ||
+                Contains(entry.GetTags(), keyword))
             {
                 entry.Display();
                 matches++;
@@ -74,14 +73,7 @@ public class Journal
 
         try
         {
-            if (IsJson(filename))
-            {
-                SaveToJson(filename);
-            }
-            else
-            {
-                SaveToText(filename);
-            }
+            SaveToText(filename);
 
             Console.WriteLine("Journal saved.");
         }
@@ -107,14 +99,7 @@ public class Journal
 
         try
         {
-            if (IsJson(filename))
-            {
-                LoadFromJson(filename);
-            }
-            else
-            {
-                LoadFromText(filename);
-            }
+            LoadFromText(filename);
 
             Console.WriteLine("Journal loaded.");
         }
@@ -124,22 +109,17 @@ public class Journal
         }
     }
 
-    private static bool IsJson(string filename)
-    {
-        return filename.Trim().EndsWith(".json", StringComparison.OrdinalIgnoreCase);
-    }
-
     private void SaveToText(string filename)
     {
         using StreamWriter outputFile = new StreamWriter(filename);
         foreach (Entry entry in _entries)
         {
             outputFile.WriteLine(
-                $"{Sanitize(entry.Date)}{Separator}" +
-                $"{Sanitize(entry.Prompt)}{Separator}" +
-                $"{Sanitize(entry.Response)}{Separator}" +
-                $"{entry.Mood}{Separator}" +
-                $"{Sanitize(entry.Tags)}"
+                $"{Sanitize(entry.GetDate())}{_separator}" +
+                $"{Sanitize(entry.GetPrompt())}{_separator}" +
+                $"{Sanitize(entry.GetResponse())}{_separator}" +
+                $"{entry.GetMood()}{_separator}" +
+                $"{Sanitize(entry.GetTags())}"
             );
         }
     }
@@ -156,9 +136,8 @@ public class Journal
                 continue;
             }
 
-            string[] parts = line.Split(Separator);
+            string[] parts = line.Split(_separator);
 
-           
             if (parts.Length >= 3)
             {
                 string date = parts[0];
@@ -185,27 +164,8 @@ public class Journal
         _entries = loaded;
     }
 
-    private void SaveToJson(string filename)
-    {
-        JsonSerializerOptions options = new JsonSerializerOptions
-        {
-            WriteIndented = true
-        };
-
-        string json = JsonSerializer.Serialize(_entries, options);
-        File.WriteAllText(filename, json);
-    }
-
-    private void LoadFromJson(string filename)
-    {
-        string json = File.ReadAllText(filename);
-        List<Entry> loaded = JsonSerializer.Deserialize<List<Entry>>(json) ?? new List<Entry>();
-        _entries = loaded;
-    }
-
     private static string Sanitize(string value)
     {
-        
         return (value ?? "").Replace("\r", " ").Replace("\n", " ");
     }
 

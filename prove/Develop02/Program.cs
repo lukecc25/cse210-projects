@@ -1,5 +1,9 @@
 using System;
 
+// Exceeding requirements:
+// - Adds optional extra fields to each entry (Mood 1-5 and Tags) and displays them with the entry.
+// - Adds a Search option that finds entries by matching the keyword against date, prompt, response, or tags.
+// - Uses a custom separator to save/load entries safely as a simple text file format.
 class Program
 {
     static void Main(string[] args)
