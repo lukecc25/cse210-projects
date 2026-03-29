@@ -4,6 +4,9 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello FinalProject World!");
+        MadLibParser parser = new MadLibParser();
+        MadLibRepository repository = new MadLibRepository("templates");
+        MadLibGame game = new MadLibGame(parser, repository);
+        game.RunMenu();
     }
 }
