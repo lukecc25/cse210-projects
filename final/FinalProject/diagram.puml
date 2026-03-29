@@ -1,0 +1,111 @@
+@startuml Final Project - Mad Libs (W11 Designer)
+'----------------------------------------------------------
+' Open-ended Final Project: Mad Libs creator/player
+' PlantUML class diagram. Naming: PascalCase classes/methods,
+' _camelCase attributes.
+'----------------------------------------------------------
+
+abstract class Placeholder {
+  - _marker : string
+  --
+  + Placeholder(marker : string)
+  + GetMarker() : string
+  + GetPrompt() : string
+}
+
+class NounPlaceholder {
+  + NounPlaceholder()
+  + GetPrompt() : string
+}
+
+class VerbPlaceholder {
+  + VerbPlaceholder()
+  + GetPrompt() : string
+}
+
+class AdjectivePlaceholder {
+  + AdjectivePlaceholder()
+  + GetPrompt() : string
+}
+
+Placeholder <|-- NounPlaceholder
+Placeholder <|-- VerbPlaceholder
+Placeholder <|-- AdjectivePlaceholder
+
+class MadLibTemplate {
+  - _title : string
+  - _rawText : string
+  --
+  + MadLibTemplate(title : string, rawText : string)
+  + GetTitle() : string
+  + GetRawText() : string
+  + SetRawText(text : string) : void
+  + GetStringRepresentation() : string
+}
+
+class PlaceholderSlot {
+  - _placeholderType : string
+  - _userWord : string
+  - _orderIndex : int
+  --
+  + PlaceholderSlot(type : string, orderIndex : int)
+  + GetPlaceholderType() : string
+  + GetUserWord() : string
+  + SetUserWord(word : string) : void
+  + IsFilled() : bool
+}
+
+class MadLibParser {
+  - _markerPattern : string
+  --
+  + MadLibParser()
+  + ParseSlots(rawText : string) : List~PlaceholderSlot~
+  + BuildFinalStory(rawText : string, slots : List~PlaceholderSlot~) : string
+}
+
+class MadLibRepository {
+  - _baseDirectory : string
+  --
+  + MadLibRepository(baseDirectory : string)
+  + SaveTemplate(template : MadLibTemplate, filename : string) : void
+  + LoadTemplate(filename : string) : MadLibTemplate
+  + ListTemplateFiles() : List~string~
+}
+
+class MadLibGame {
+  - _parser : MadLibParser
+  - _repository : MadLibRepository
+  --
+  + MadLibGame(parser : MadLibParser, repository : MadLibRepository)
+  + CreateTemplateFromUser() : MadLibTemplate
+  + PlayTemplate(template : MadLibTemplate) : void
+  + RunMenu() : void
+}
+
+'----------------------------------------------------------
+' Relationships (composition / usage)
+'----------------------------------------------------------
+MadLibGame --> MadLibParser : uses
+MadLibGame --> MadLibRepository : uses
+MadLibParser ..> PlaceholderSlot : creates
+MadLibParser ..> Placeholder : maps markers to
+MadLibParser ..> MadLibTemplate : reads
+MadLibRepository ..> MadLibTemplate : save/load
+
+'----------------------------------------------------------
+' Interaction (how the design fits together)
+'----------------------------------------------------------
+note right of MadLibGame
+  **Interaction:**
+  The user will interact through **MadLibGame.RunMenu()** (called from Program).
+  To **play**: load or pick a **MadLibTemplate**, **MadLibParser.ParseSlots()** will find
+  each placeholder in the raw text (e.g. {NOUN}, {VERB}) using special characters, the user 
+  is then prompted for each **PlaceholderSlot**, then **BuildFinalStory()** will substitute the words 
+  into the text. To **create**: The user will enter a title and story text with markers; template is 
+  saved through **MadLibRepository.SaveTemplate()**. To **load**: **LoadTemplate()** will restore a
+  **MadLibTemplate** from disk. Polymorphism: **NounPlaceholder**, **VerbPlaceholder**,
+  and **AdjectivePlaceholder** will override the **GetPrompt()** so the same code can ask for
+  the right kind of word when resolving the marker types to the prompts.
+end note
+
+@enduml
