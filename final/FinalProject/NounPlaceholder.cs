@@ -10,4 +10,9 @@ public class NounPlaceholder : Placeholder
     {
         return "Enter a noun:";
     }
+
+    public override string GetExample()
+    {
+        return "A noun names a person, place, thing, or idea. Examples: dolphin, kitchen, courage.";
+    }
 }

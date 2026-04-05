@@ -10,4 +10,9 @@ public class AdjectivePlaceholder : Placeholder
     {
         return "Enter an adjective:";
     }
+
+    public override string GetExample()
+    {
+        return "An adjective describes a noun. Examples: scratchy, brave, miniature.";
+    }
 }

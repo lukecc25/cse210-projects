@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 public class MadLibParser
 {
@@ -24,8 +23,10 @@ public class MadLibParser
             int end = rawText.IndexOf('}', start);
             if (end < 0)
                 break;
+            string exactMarker = rawText.Substring(start, end - start + 1);
             string inner = rawText.Substring(start + 1, end - start - 1).Trim();
-            slots.Add(new PlaceholderSlot(inner, order++));
+            if (inner.Length > 0)
+                slots.Add(new PlaceholderSlot(inner, order++, exactMarker));
             i = end + 1;
         }
         return slots;
@@ -33,20 +34,22 @@ public class MadLibParser
 
     public string BuildFinalStory(string rawText, List<PlaceholderSlot> slots)
     {
+        if (string.IsNullOrEmpty(rawText))
+            return "";
         if (slots == null || slots.Count == 0)
-            return rawText ?? "";
+            return rawText;
 
-        StringBuilder result = new StringBuilder(rawText ?? "");
+        string result = rawText;
         foreach (PlaceholderSlot slot in slots)
         {
-            string marker = "{" + slot.GetPlaceholderType() + "}";
-            int idx = result.ToString().IndexOf(marker, StringComparison.Ordinal);
+            string marker = slot.GetExactMarker();
+            string replacement = slot.GetUserWord() ?? "";
+            if (string.IsNullOrEmpty(marker))
+                continue;
+            int idx = result.IndexOf(marker, StringComparison.Ordinal);
             if (idx >= 0)
-            {
-                result.Remove(idx, marker.Length);
-                result.Insert(idx, slot.GetUserWord());
-            }
+                result = result.Substring(0, idx) + replacement + result.Substring(idx + marker.Length);
         }
-        return result.ToString();
+        return result;
     }
 }

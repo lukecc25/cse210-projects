@@ -1,4 +1,4 @@
-@startuml Final Project - Mad Libs (W11 Designer)
+@startuml Final Project - Mad Libs
 '----------------------------------------------------------
 ' Open-ended Final Project: Mad Libs creator/player
 ' PlantUML class diagram. Naming: PascalCase classes/methods,
@@ -11,26 +11,39 @@ abstract class Placeholder {
   + Placeholder(marker : string)
   + GetMarker() : string
   + GetPrompt() : string
+  + GetExample() : string
 }
 
 class NounPlaceholder {
   + NounPlaceholder()
   + GetPrompt() : string
+  + GetExample() : string
 }
 
 class VerbPlaceholder {
   + VerbPlaceholder()
   + GetPrompt() : string
+  + GetExample() : string
 }
 
 class AdjectivePlaceholder {
   + AdjectivePlaceholder()
   + GetPrompt() : string
+  + GetExample() : string
+}
+
+class GenericPlaceholder {
+  - _slotLabel : string
+  --
+  + GenericPlaceholder(slotLabel : string)
+  + GetPrompt() : string
+  + GetExample() : string
 }
 
 Placeholder <|-- NounPlaceholder
 Placeholder <|-- VerbPlaceholder
 Placeholder <|-- AdjectivePlaceholder
+Placeholder <|-- GenericPlaceholder
 
 class MadLibTemplate {
   - _title : string
@@ -39,7 +52,6 @@ class MadLibTemplate {
   + MadLibTemplate(title : string, rawText : string)
   + GetTitle() : string
   + GetRawText() : string
-  + SetRawText(text : string) : void
   + GetStringRepresentation() : string
 }
 
@@ -47,16 +59,17 @@ class PlaceholderSlot {
   - _placeholderType : string
   - _userWord : string
   - _orderIndex : int
+  - _exactMarker : string
   --
-  + PlaceholderSlot(type : string, orderIndex : int)
+  + PlaceholderSlot(type : string, orderIndex : int, exactMarkerInText : string)
   + GetPlaceholderType() : string
+  + GetExactMarker() : string
   + GetUserWord() : string
   + SetUserWord(word : string) : void
-  + IsFilled() : bool
+  + GetOrderIndex() : int
 }
 
 class MadLibParser {
-  - _markerPattern : string
   --
   + MadLibParser()
   + ParseSlots(rawText : string) : List~PlaceholderSlot~
@@ -67,14 +80,17 @@ class MadLibRepository {
   - _baseDirectory : string
   --
   + MadLibRepository(baseDirectory : string)
+  + GetBaseDirectory() : string
   + SaveTemplate(template : MadLibTemplate, filename : string) : void
   + LoadTemplate(filename : string) : MadLibTemplate
+  + {static} ParseSavedContent(content : string, fallbackTitle : string) : MadLibTemplate
   + ListTemplateFiles() : List~string~
 }
 
 class MadLibGame {
   - _parser : MadLibParser
   - _repository : MadLibRepository
+  - _lastTemplate : MadLibTemplate
   --
   + MadLibGame(parser : MadLibParser, repository : MadLibRepository)
   + CreateTemplateFromUser() : MadLibTemplate
@@ -88,7 +104,7 @@ class MadLibGame {
 MadLibGame --> MadLibParser : uses
 MadLibGame --> MadLibRepository : uses
 MadLibParser ..> PlaceholderSlot : creates
-MadLibParser ..> Placeholder : maps markers to
+MadLibGame ..> Placeholder : prompts via
 MadLibParser ..> MadLibTemplate : reads
 MadLibRepository ..> MadLibTemplate : save/load
 
@@ -97,15 +113,12 @@ MadLibRepository ..> MadLibTemplate : save/load
 '----------------------------------------------------------
 note right of MadLibGame
   **Interaction:**
-  The user will interact through **MadLibGame.RunMenu()** (called from Program).
-  To **play**: load or pick a **MadLibTemplate**, **MadLibParser.ParseSlots()** will find
-  each placeholder in the raw text (e.g. {NOUN}, {VERB}) using special characters, the user 
-  is then prompted for each **PlaceholderSlot**, then **BuildFinalStory()** will substitute the words 
-  into the text. To **create**: The user will enter a title and story text with markers; template is 
-  saved through **MadLibRepository.SaveTemplate()**. To **load**: **LoadTemplate()** will restore a
-  **MadLibTemplate** from disk. Polymorphism: **NounPlaceholder**, **VerbPlaceholder**,
-  and **AdjectivePlaceholder** will override the **GetPrompt()** so the same code can ask for
-  the right kind of word when resolving the marker types to the prompts.
+  The user interacts through **MadLibGame.RunMenu()** (from **Program**).
+  **Play:** **MadLibParser.ParseSlots()** finds each **{marker}** in the template text;
+  the user fills each **PlaceholderSlot**; **BuildFinalStory()** substitutes words.
+  **Create:** title + multi-line story with markers; **SaveTemplate** / **LoadTemplate**
+  use **MadLibRepository**. Polymorphism: **Placeholder** subclasses override
+  **GetPrompt()** and **GetExample()** (e.g. noun vs verb help text).
 end note
 
 @enduml

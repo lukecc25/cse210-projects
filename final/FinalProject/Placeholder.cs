@@ -15,4 +15,6 @@ public abstract class Placeholder
     }
 
     public abstract string GetPrompt();
+
+    public abstract string GetExample();
 }

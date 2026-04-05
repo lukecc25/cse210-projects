@@ -5,17 +5,35 @@ public class PlaceholderSlot
     private string _placeholderType;
     private string _userWord;
     private int _orderIndex;
+    private string _exactMarker;
 
-    public PlaceholderSlot(string type, int orderIndex)
+    public PlaceholderSlot(string type, int orderIndex, string exactMarkerInText)
     {
-        _placeholderType = type ?? "";
+        _placeholderType = NormalizeType(type ?? "");
         _userWord = "";
         _orderIndex = orderIndex;
+        _exactMarker = string.IsNullOrEmpty(exactMarkerInText)
+            ? "{" + _placeholderType + "}"
+            : exactMarkerInText;
+    }
+
+    private static string NormalizeType(string type)
+    {
+        string t = type.Trim();
+        string u = t.ToUpperInvariant();
+        if (u == "ADJECTIVE")
+            return "ADJ";
+        return u;
     }
 
     public string GetPlaceholderType()
     {
         return _placeholderType;
+    }
+
+    public string GetExactMarker()
+    {
+        return _exactMarker;
     }
 
     public string GetUserWord()
@@ -26,11 +44,6 @@ public class PlaceholderSlot
     public void SetUserWord(string word)
     {
         _userWord = word ?? "";
-    }
-
-    public bool IsFilled()
-    {
-        return !string.IsNullOrWhiteSpace(_userWord);
     }
 
     public int GetOrderIndex()

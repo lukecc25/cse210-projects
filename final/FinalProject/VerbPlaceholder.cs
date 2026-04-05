@@ -10,4 +10,9 @@ public class VerbPlaceholder : Placeholder
     {
         return "Enter a verb:";
     }
+
+    public override string GetExample()
+    {
+        return "A verb is an action or state. Examples: sprint, wonder, melt.";
+    }
 }
