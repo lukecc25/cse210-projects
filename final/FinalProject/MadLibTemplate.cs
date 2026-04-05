@@ -21,11 +21,6 @@ public class MadLibTemplate
         return _rawText;
     }
 
-    public void SetRawText(string text)
-    {
-        _rawText = text ?? "";
-    }
-
     public string GetStringRepresentation()
     {
         return _title + Environment.NewLine + "---" + Environment.NewLine + _rawText;
